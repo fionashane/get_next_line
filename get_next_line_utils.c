@@ -1,56 +1,90 @@
 #include "get_next_line.h"
 
-size_t	ft_strlen(char *s)
+size_t	ft_strlcpy(char *dst, char *src, size_t size)
 {
 	size_t	i;
+	size_t	len;
 
+	len = ft_strlen((char *)src);
 	i = 0;
-	while (s[i])
+	if (size == 0)
+		return (len);
+	while (src[i] && i < size - 1)
+	{
+		dst[i] = src[i];
 		i++;
-	return (i);
+	}
+	if (i < size)
+		dst[i] = '\0';
+	return (len);
 }
 
-char	*ft_strchr(char *s, int c)
+char	*ft_strdup(char *str)
 {
-	char	*ptr;
+	size_t	len;
+	char	*out;
 
-	ptr = (char *)s;
-	c = (unsigned char)c;
-	while (*ptr)
-	{
-		if (*ptr == c)
-			return (ptr);
-		ptr++;
-	}
-	if (c == 0)
-		return (ptr);
+	len = ft_strlen((char *)str) + 1;
+	out = malloc(len * sizeof(char));
+	if (!out)
+		return (NULL);
+	ft_strlcpy(out, str, len + 1);
+	free (str);
+	return (out);
+}
+
+char	*ft_strchr(const char *str, int32_t c)
+{
+	char	*str2;
+
+	if (!str)
+		return (NULL);
+	if (c < 0 || c > 255)
+		return ((char *)str);
+	str2 = (char *)str;
+	while (*str2 != c && *str2)
+		str2++;
+	if (*str2 == c)
+		return (str2);
 	return (NULL);
 }
 
-char	*ft_strjoin(char *left_str, char *buff)
+char	*ft_strjoin(char *str1, char *str2)
 {
-	size_t	i;
-	size_t	j;
-	char	*str;
+	size_t	str1len;
+	size_t	str2len;
+	char	*out;
 
-	if (!left_str)
-	{
-		left_str = (char *)malloc(1 * sizeof(char));
-		left_str[0] = '\0';
-	}
-	if (!left_str || !buff)
+	if (!str1 || !str2)
+		return (0);
+	str1len = ft_strlen(str1);
+	str2len = ft_strlen(str2);
+	out = malloc((str1len + str2len + 1) * sizeof(char));
+	if (!out)
+		return (0);
+	ft_strlcpy(out, str1, str1len + 1);
+	free(str1);
+	ft_strlcpy(out + str1len, str2, str2len + 1);
+	return (out);
+}
+
+char	*ft_substr(char *str, uint32_t start, size_t len)
+{
+	char	*out;
+	size_t	slen;
+
+	slen = ft_strlen(str);
+	if (!str)
 		return (NULL);
-	str = malloc(sizeof(char) * ((ft_strlen(left_str) + ft_strlen(buff)) + 1));
-	if (str == NULL)
+	if (start >= slen)
+		return (ft_strdup(""));
+	if (len > slen - start)
+		return (ft_strdup(str + start));
+	out = malloc((len + 1) * sizeof(char));
+	if (!out)
 		return (NULL);
-	i = -1;
-	j = 0;
-	if (left_str)
-		while (left_str[++i] != '\0')
-			str[i] = left_str[i];
-	while (buff[j] != '\0')
-		str[i++] = buff[j++];
-	str[ft_strlen(left_str) + ft_strlen(buff)] = '\0';
-	free(left_str);
-	return (str);
+	ft_strlcpy(out, str + start, len);
+	free(str);
+	out[len] = '\0';
+	return (out);
 }
