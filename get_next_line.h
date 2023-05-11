@@ -12,11 +12,9 @@
 # endif
 
 char	*get_next_line(int fd);
-size_t	ft_strlcpy(char *dst, char *src, size_t size);
-char	*ft_strdup(char *str);
-char	*ft_strchr(const char *str, int32_t c);
+char	*ft_strchr(const char *str, int c);
+char	*ft_strdup(const char *str);
 char	*ft_strjoin(char *str1, char *str2);
-char	*ft_substr(char *str, uint32_t start, size_t len);
-int	ft_strlen(const char *str);
+size_t	ft_strlen(const char *str);
 
 #endif

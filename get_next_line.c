@@ -1,68 +1,96 @@
 #include "get_next_line.h"
 
-int	ft_strlen(const char *str)
+int ft_check_errors(int fd)
 {
-	int	i;
-
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+        return (1);
+    return (0);
 }
 
-static char *ft_add_chars(int fd, char *line, char *buffer)
+int ft_get_index(char *stash)
 {
-    ssize_t rd_size;
-
-    rd_size = BUFFER_SIZE;
-    while (!(ft_strchr(buffer, '\n')) && rd_size == BUFFER_SIZE)
-    {
-        rd_size = read(fd, buffer, BUFFER_SIZE);
-        buffer[rd_size] = '\0';
-        if (rd_size <= 0 && !line[0])
-        {
-            free(line);
-            line = NULL;
-            return (NULL);
-        }
-        line = ft_strjoin(line, buffer);
-    }
-    return (line);
-}
-
-static char *ft_remove_chars(char *line, char *buffer)
-{
-    ssize_t i;
-    ssize_t j;
+    int i;
 
     i = 0;
-    while (line[i] && line[i] != '\n')
+    while (stash[i] && stash[i] != '\n')
         i++;
-	if (line[i] == '\n')
+    if (stash[i] == '\n')
         i++;
-    j = (ft_strlen(line) - i);
-    if (j != 0)
-        ft_strlcpy(buffer, line + i, j + 1);
-    else
-        buffer[0] = '\0';
-    return (ft_substr(line, 0, i + 1));
+    return (i);
 }
 
-char *get_next_line(int fd)
+static char    *ft_add_chars(int fd, char *stash)
 {
-    char *line;
-    static char buffer[BUFFER_SIZE + 1];
+    ssize_t        bytes_read;
+    char        buffer[BUFFER_SIZE + 1];
 
-    if (fd < 0 || BUFFER_SIZE <= 0)
+    bytes_read = 0;
+    if (!stash)
+        stash = ft_strdup("");
+    while (!ft_strchr(stash, '\n'))
+    {
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        if (!bytes_read)
+            return (stash);
+        if (bytes_read < 0)
+            return (0);
+        buffer[bytes_read] = '\0';
+        stash = ft_strjoin(stash, buffer);
+        if (!stash)
+            return (0);
+    }
+    return (stash);
+}
+
+static char    *ft_gen_line(char *stash)
+{
+    int        i;
+    char    *s;
+
+    if (!stash)
         return (0);
-    line = malloc(1);
-    if (!line)
+    i = ft_get_index(stash);
+    s = (char *)malloc(sizeof(char) * (i + 1));
+    if (!s)
         return (0);
-    line[0] = '\0';
-    if (buffer[0] != '\0')
-        line = ft_strjoin(line, buffer);
-    line = ft_add_chars(fd, line, buffer);
-    if (!line)
-        return (0);
-    return (ft_remove_chars(line, buffer));
+    i = 0;
+    while (stash[i] && stash[i] != '\n')
+    {
+        s[i] = stash[i];
+        i++;
+    }
+    if (stash[i] == '\n')
+    {
+        s[i] = stash[i];
+        i++;
+    }
+    s[i] = '\0';
+    return (s);
+}
+
+char    *get_next_line(int fd)
+{
+    char        *aux;
+    char        *line;
+    static char    *stash;
+
+    if (ft_check_errors(fd))
+    {
+        if (stash)
+            free(stash);
+        return (stash = 0);
+    }
+    stash = ft_add_chars(fd, stash);
+    if (stash == 0 || *stash == 0)
+    {
+        free(stash);
+        return (stash = 0);
+    }
+    line = ft_gen_line(stash);
+    aux = ft_strchr(stash, '\n');
+    if (aux && *aux)
+        aux = ft_strdup(aux + 1);
+    free(stash);
+    stash = aux;
+    return (line);
 }

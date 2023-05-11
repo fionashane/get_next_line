@@ -1,90 +1,65 @@
 #include "get_next_line.h"
 
-size_t	ft_strlcpy(char *dst, char *src, size_t size)
+size_t  ft_strlen(const char *str)
 {
-	size_t	i;
-	size_t	len;
+    size_t  i;
 
-	len = ft_strlen((char *)src);
-	i = 0;
-	if (size == 0)
-		return (len);
-	while (src[i] && i < size - 1)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	if (i < size)
-		dst[i] = '\0';
-	return (len);
+    i = 0;
+    while (str[i])
+        i++;
+    return (i);
 }
 
-char	*ft_strdup(char *str)
+char    *ft_strjoin(char *s1, char *s2)
 {
-	size_t	len;
-	char	*out;
+    char    *str;
+    size_t  size;
+    int     i;
+    int     j;
 
-	len = ft_strlen((char *)str) + 1;
-	out = malloc(len * sizeof(char));
-	if (!out)
-		return (NULL);
-	ft_strlcpy(out, str, len + 1);
-	free (str);
-	return (out);
+    size = ft_strlen(s1) + ft_strlen(s2) + 1;
+    str = (char *)malloc(size * sizeof(char));
+    if (!str)
+        return (0);
+    i = 0;
+    j = 0;
+    while (s1[j])
+        str[i++] = s1[j++];
+    j = 0;
+    while (s2[j])
+        str[i++] = s2[j++];
+    str[i] = '\0';
+	free(s1);
+    return (str);
 }
 
-char	*ft_strchr(const char *str, int32_t c)
+char    *ft_strchr(const char *s, int c)
 {
-	char	*str2;
-
-	if (!str)
-		return (NULL);
-	if (c < 0 || c > 255)
-		return ((char *)str);
-	str2 = (char *)str;
-	while (*str2 != c && *str2)
-		str2++;
-	if (*str2 == c)
-		return (str2);
-	return (NULL);
+    while (*s)
+    {
+        if ((unsigned char)*s == (unsigned char)c)
+            return ((char *)s);
+        s++;
+    }
+    if (!c)
+        return ((char *)s);
+    return (0);
 }
 
-char	*ft_strjoin(char *str1, char *str2)
+char    *ft_strdup(const char *s)
 {
-	size_t	str1len;
-	size_t	str2len;
-	char	*out;
+    char    *dup;
+    int     i;
 
-	if (!str1 || !str2)
-		return (0);
-	str1len = ft_strlen(str1);
-	str2len = ft_strlen(str2);
-	out = malloc((str1len + str2len + 1) * sizeof(char));
-	if (!out)
-		return (0);
-	ft_strlcpy(out, str1, str1len + 1);
-	free(str1);
-	ft_strlcpy(out + str1len, str2, str2len + 1);
-	return (out);
-}
-
-char	*ft_substr(char *str, uint32_t start, size_t len)
-{
-	char	*out;
-	size_t	slen;
-
-	slen = ft_strlen(str);
-	if (!str)
-		return (NULL);
-	if (start >= slen)
-		return (ft_strdup(""));
-	if (len > slen - start)
-		return (ft_strdup(str + start));
-	out = malloc((len + 1) * sizeof(char));
-	if (!out)
-		return (NULL);
-	ft_strlcpy(out, str + start, len);
-	free(str);
-	out[len] = '\0';
-	return (out);
+    i = 0;
+    dup = (char *)malloc(ft_strlen(s) + 1);
+    if (!dup)
+        return (0);
+    while (s[i])
+    {
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
 }
