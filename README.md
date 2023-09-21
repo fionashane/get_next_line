@@ -56,11 +56,3 @@ int get_next_line(int fd, char **line);
 ```
 
 The `fd` parameter is the file descriptor to read from, and `line` is the address of a pointer that will be allocated to store the line read from the file. The function returns 1 if a line was read successfully, 0 if the end of file was reached, or -1 in case of an error.
-
-## Credits
-
-The **Get_Next_Line** project was developed by [42 Adelaide](https://www.42adel.org.au/).
-
-## License
-
-This project is licensed under the [MIT license](https://opensource.org/licenses/MIT).
