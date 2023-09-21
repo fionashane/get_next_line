@@ -18,7 +18,7 @@ The project aims to introduce students to file manipulation and advanced memory 
 To use the **Get_Next_Line** function, you need to:
 1. Clone the repository to your local machine
 ```bash
-git clone https://github.com/your_username/get_next_line.git
+git clone https://github.com/fionashane/get_next_line.git
 ```
 
 2. Compile the function using the provided Makefile
