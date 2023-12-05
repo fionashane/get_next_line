@@ -33,13 +33,16 @@ make
 
 4. Call the `get_next_line` function to read lines from a file descriptor
 ```c
+#include <stdio.h>
+
 int main()
 {
-    int fd = open("file.txt", O_RDONLY);
+    int fd;
     char *line;
-    while (get_next_line(fd, &line) > 0)
+
+    fd = open("test.txt", O_RDONLY);
+    while ((line = get_next_line(fd)))
     {
-        // Process the line
         printf("%s\n", line);
         free(line);
     }
@@ -52,7 +55,7 @@ int main()
 
 The **Get_Next_Line** function has the following signature:
 ```c
-int get_next_line(int fd, char **line);
+int get_next_line(int fd]);
 ```
 
 The `fd` parameter is the file descriptor to read from, and `line` is the address of a pointer that will be allocated to store the line read from the file. The function returns 1 if a line was read successfully, 0 if the end of file was reached, or -1 in case of an error.
